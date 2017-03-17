@@ -7,9 +7,9 @@ from collections import Counter
 
 if __name__ == '__main__':
     client = boto3.client('rekognition')
-    pdir = '/Users/janae/data/elvis_notPM'
-    thres = 50
-    colId = 'PMs_google2'
+    pdir = '/Users/janae/data/elvisAll/elvis_notPM'
+    thres = 98.3
+    colId = 'PMs_google'
     print('threshold: ', thres)
     print('collectionId: ', colId)
     # no PM found, no face found, wrong PM found
@@ -18,8 +18,8 @@ if __name__ == '__main__':
     for f in allfiles:
         ff = os.path.join(pdir, f)
         #ff = '/Users/janae/data/desk.jpg'
-        #ff = '/Users/janae/data/elvisPMs/David_Cameron/10326689.jpg'
-        #print(ff)
+        ff = '/Users/janae/data/elvisAll/elvisPMs/David_Cameron/10326689.jpg'
+        print(ff)
         foundPM = False
         foundFace = True
         allfound = []
@@ -57,5 +57,6 @@ if __name__ == '__main__':
         if not foundFace:
             pmRes[1] += 1
 
+        #sys.exit(1)
 print("no PM found, no face found, PM found wrong")
 print(pmRes)

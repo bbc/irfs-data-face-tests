@@ -10,9 +10,9 @@ if __name__ == '__main__':
     pdir = '/Users/janae/data/elvisPMs_last100'
     testPMs = ['David_Cameron', 'Gordon_Brown', 'Tony_Blair']
     #testPMs = ['David_Cameron']
-    thres = 80
+    thres = 98.3
     maxNum = 100
-    colId = 'PMs_google2'
+    colId = 'PMs_google'
     print('threshold: ', thres)
     print('maxNum: ', maxNum)
     print('collection ID: ', colId)

@@ -5,10 +5,11 @@ import boto3
 
 if __name__ == '__main__':
     client = boto3.client('rekognition')
-
-    trainDir = '/Users/janae/data/PMs2'
-    response = client.delete_collection( CollectionId='PMs_google2')
-    response = client.create_collection( CollectionId='PMs_google2')
+    
+    colId = 'PMs_google'
+    trainDir = '/Users/janae/data/PMs'
+    response = client.delete_collection( CollectionId=colId)
+    response = client.create_collection( CollectionId=colId)
     #pprint.pprint(response)
     with open('listPrimeMinisters.txt') as l:
         for p in l:
@@ -28,7 +29,7 @@ if __name__ == '__main__':
                         continue
                 try:
                     response = client.index_faces(
-                        CollectionId='PMs_google2',
+                        CollectionId=colId,
                         Image={ 'Bytes': source_bytes },
                         ExternalImageId=pname
                     )
@@ -38,7 +39,7 @@ if __name__ == '__main__':
 
 
     response = client.list_faces(
-        CollectionId='PMs_google2'
+        CollectionId=colId
     )
     pprint.pprint(response)
 

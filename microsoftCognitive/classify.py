@@ -10,11 +10,11 @@ try:
 except:
     exit("MICROSOFT_DEV_KEY environment variable needs to be set")
 
+time.sleep(3.1)
 CF.Key.set(devKey)
-#CF.person_group.train('pms')
+#CF.person_group.train('pms2')
 #sys.exit(0)
 
-#CF.person_group.create('pms')
 
 pdir = '/Users/janae/data/elvisPMs_last100'
 testPMs = ['David_Cameron', 'Gordon_Brown', 'Tony_Blair']
@@ -30,13 +30,15 @@ for i in range(len(testPMs)):
         foundWrong = False
         detectedFaces = []
         try:
+            time.sleep(3.1)
             detectedFaces = CF.face.detect(ff)
             for face in detectedFaces:
-                res = CF.face.identify([face['faceId']], 'pms')
-                time.sleep(4)
+                time.sleep(3.1)
+                res = CF.face.identify([face['faceId']], 'pms2')
                 for a in res:
                     for b in a['candidates']:
-                        resPerson = CF.person.get('pms',b['personId'])
+                        time.sleep(3.1)
+                        resPerson = CF.person.get('pms2',b['personId'])
                         resPerson = resPerson['name']
                         print(resPerson)
                         if resPerson.replace(' ', '_') == pm:
