@@ -82,6 +82,49 @@ def getGoogleTrain(args):
                 firstTrain = 1
     return trainEmbeddings, trainLabels
 
+def getElvisTrain(args):
+    trainLabels = list()
+    #trainEmbeddings = np.array(0)
+    firstTrain = 0
+    with open(args.peopleList) as plist:
+        for pl in plist:
+            thisp = pl.replace(' ', '_')
+            thisp = thisp.strip()
+            #print(thisp)
+            thisFileNames = list()
+            #thisEmbeddings = np.array()
+            firstRow = 0
+            # find all corresponding files
+            thisdir = os.path.join(args.elvisDir, thisp)
+            #print(thisdir)
+            if not os.path.isdir(thisdir):
+                continue
+            for thisfile in os.listdir(thisdir):
+                #print(thisfile)
+                if thisfile.endswith(".vgg1"):
+                    with open(os.path.join(thisdir, thisfile), 'rb') as f:
+                        reader = csv.reader(f)
+                        for row in reader:
+                            if firstRow:
+                            #if thisEmbeddings.any():
+                                thisEmbeddings = np.vstack((thisEmbeddings, row))
+                            else:
+                                thisEmbeddings = np.asarray(row)
+                                firstRow = 1
+                   
+            #print(thisFileNames)
+            #print(thisEmbeddings.shape)
+            if len(thisEmbeddings.shape) > 1:
+                trainLabels.extend([thisp] * thisEmbeddings.shape[0])
+            else:
+                trainLabels.extend([thisp])
+            if firstTrain:
+                trainEmbeddings = np.vstack((trainEmbeddings, thisEmbeddings))
+            else:
+                trainEmbeddings = thisEmbeddings
+                firstTrain = 1
+    return trainEmbeddings, trainLabels
+
 def testElvis(args, le, clf, testPMs):
     # PM found, PM not found, no face found, wrong PM found
     pmRes = [[0,0,0,0],[0,0,0,0],[0,0,0,0]]
@@ -169,6 +212,12 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     googleTrainEmbeddings, googleTrainLabels = getGoogleTrain(args)    
+
+    if args.elvisDir:
+        elvisTrainEmbeddings, elvisTrainLabels = getElvisTrain(args)    
+        print('evlisTrain:', elvisTrainEmbeddings.shape)
+        googleTrainEmbeddings = np.vstack((googleTrainEmbeddings, elvisTrainEmbeddings))
+        googleTrainLabels = googleTrainLabels + elvisTrainLabels
 
     if args.classifier == 'radius':
         print('no lfw')

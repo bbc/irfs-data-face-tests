@@ -17,15 +17,20 @@ config.paths.face_model_path = 'data/face_model.mat';
 % featDir='PMs/';
 % dataDir='~/data/PMsAll/PMs/';
 
-useExtractedFaces = 0; 
-doDirs=textread('lfw.list', '%s');
-featDir='lfw/';
-dataDir='~/data/lfw/';
+% useExtractedFaces = 0; 
+% doDirs=textread('lfw.list', '%s');
+% featDir='lfw/';
+% dataDir='~/data/lfw/';
 
 % useExtractedFaces = 0; 
 % doDirs=textread('elvisTest.list', '%s');
 % featDir='elvisPMs_last100/';
 % dataDir='~/data/elvisAll/elvisPMs_last100/';
+
+useExtractedFaces = 0; 
+doDirs=textread('elvisTest.list', '%s');
+featDir='elvisPMs/';
+dataDir='~/data/elvisAll/elvisPMs/';
 
 % useExtractedFaces = 0; 
 % doDirs={'.'};
