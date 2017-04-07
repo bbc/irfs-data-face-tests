@@ -1,0 +1,2 @@
+clean-up by duplicate removal thres 10
+then outlier removal at set threshold until convergence
