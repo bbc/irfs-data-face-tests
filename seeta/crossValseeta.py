@@ -12,6 +12,7 @@ from sklearn.neighbors import RadiusNeighborsClassifier
 from sklearn.neighbors import KNeighborsClassifier
 import sys
 import csv
+import random
 
 fileDir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
@@ -54,6 +55,8 @@ def getGoogleTrain(args):
             firstRow = 0
             # find all corresponding files
             thisdir = os.path.join(args.googleDir, thisp)
+            if not os.path.isdir(thisdir):
+                continue
             for thisfile in os.listdir(thisdir):
                 if thisfile.endswith(".seeta"):
                     with open(os.path.join(thisdir, thisfile), 'rb') as f:
@@ -97,9 +100,10 @@ def getElvisTrain(args):
                         reader = csv.reader(f)
                         for row in reader:
                             featList.append(row)
-                   
+            if args.elvisNum > 0 and args.elvisNum < len(featList):
+                featList = random.sample(featList, args.elvisNum)       
             thisEmbeddings = np.vstack(featList)
-            #print(thisEmbeddings.shape)
+            print(thisEmbeddings.shape)
             #print(thisFileNames)
             if thisEmbeddings.ndim == 2:
                 trainLabels.extend([thisp] * thisEmbeddings.shape[0])
@@ -193,6 +197,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--googleDir', type=str)
     parser.add_argument('--elvisDir', type=str)
+    parser.add_argument('--elvisNum', type=int, default=0)
     parser.add_argument('--elvisTestDir', type=str)
     parser.add_argument('--notPMDir', type=str)
     parser.add_argument('--peopleList', type=str, help="list of people, e.g. listPrimeMinisters.txt")
