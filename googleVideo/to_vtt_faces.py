@@ -21,6 +21,7 @@ cues = {}
 timestamps = []
 one_frame = 1. / 25.
 
+faceID = 0
 for anRes in rd['response']['annotationResults']:
     #print(json.dumps(anRes, indent=2, sort_keys=True))
     for face in anRes['faceAnnotations']:
@@ -33,7 +34,8 @@ for anRes in rd['response']['annotationResults']:
             if interval not in cues:
                 cues[interval] = []
                 timestamps.append(interval)
-            cues[interval].append({'thumbnail': face['thumbnail']})
+            cues[interval].append({'thumbnail': face['thumbnail'], 'faceID': faceID})
+        faceID += 1
 
 print "WEBVTT FILE"
 

@@ -38,8 +38,9 @@
     </div>
     <button id="play">play</button>
     <button id="stop">stop</button>
-    <div id="label" style="font-size:28px"><br>---<br><br></div>
+    <div id="label" style="font-size:28px"><br><br><br></div>
     <div id="face"></div>
+    <div id="faceID" style="font-size:28px"></div>
     <script type="application/javascript">
       function setupCanvas(canvasId, trackId, color) {
           var canvas = document.getElementById(canvasId);
@@ -52,7 +53,7 @@
               this.track.mode = "hidden";
               this.track.oncuechange = function() {
                   console.log("Cue Change")
-                  label.innerHTML = '<br>---<br><br>'
+                  label.innerHTML = '<br><br><br>'
                   if(this.activeCues.length > 0) {
                       allLabels = '<br>'
                       for(i = 0; i < this.activeCues.length; i++) {
@@ -76,6 +77,7 @@
       function setupCanvasFace(canvasId, trackId) {
           var canvas = document.getElementById(canvasId);
           var faceImg = document.getElementById("img");
+          var faceID = document.getElementById("faceID");
           canvas.width = 1024;
           canvas.height = 576;
       
@@ -83,6 +85,7 @@
           trackElement.addEventListener("load", function() {
               this.track.mode = "hidden";
               this.track.oncuechange = function() {
+                  faceID.innerHTML = ''
                   console.log("Face Cue Change")
                   var faceImg = document.createElement("img")
                   var faceDiv = document.getElementById('face')
@@ -104,6 +107,7 @@
                                 base64JsonData = l['thumbnail']
                                 faceImg.src = "data:image/png;base64," + base64JsonData;
                                 faceDiv.appendChild(faceImg); 
+                                faceID.innerHTML += '.....' + l['faceID'] + '......'
                              }
                           }
                       }
