@@ -1,0 +1,6 @@
+{
+   "inputUri":"gs://jana/20170410-223000-bbc-london-news-h264lg.mp4"
+   "features": [
+       "LABEL_DETECTION"
+   ]
+}
