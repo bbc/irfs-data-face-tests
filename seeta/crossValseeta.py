@@ -7,9 +7,12 @@ import re
 import numpy as np
 from sklearn.preprocessing import LabelEncoder, normalize
 from sklearn.svm import SVC, LinearSVC
+from sklearn.multiclass import OneVsRestClassifier
+from sklearn.multiclass import OneVsOneClassifier
 import pickle
 from sklearn.neighbors import RadiusNeighborsClassifier
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn import linear_model
 import sys
 import csv
 import random
@@ -103,7 +106,7 @@ def getElvisTrain(args):
             if args.elvisNum > 0 and args.elvisNum < len(featList):
                 featList = random.sample(featList, args.elvisNum)       
             thisEmbeddings = np.vstack(featList)
-            print(thisEmbeddings.shape)
+            #print(thisEmbeddings.shape)
             #print(thisFileNames)
             if thisEmbeddings.ndim == 2:
                 trainLabels.extend([thisp] * thisEmbeddings.shape[0])
@@ -203,7 +206,7 @@ if __name__ == '__main__':
     parser.add_argument('--peopleList', type=str, help="list of people, e.g. listPrimeMinisters.txt")
     parser.add_argument('--nameUnknown', type=str, help="'Other' class, e.g. notPM")
     parser.add_argument('--otherDir', type=str)
-    parser.add_argument('--classifier', type=str, help="'radius', 'svm'")
+    parser.add_argument('--classifier', type=str, help="'radius', 'svm', 'linearSVC', 'multiclass', 'multiclass2', 'sgd'")
     parser.add_argument('--saveClassifier', type=str, help="filename")
 
     args = parser.parse_args()
@@ -226,7 +229,7 @@ if __name__ == '__main__':
 
     if args.classifier == 'radius':
         print('no lfw')
-    elif args.classifier == 'svm' or args.classifier == 'linearSVC':
+    elif args.classifier == 'svm' or args.classifier == 'linearSVC' or args.classifier == 'multiclass' or args.classifier == 'sgd' or args.classifier == 'multiclass2':
         print('with lfw')
         print('load other train')
         otherTrainEmbeddings, otherTrainLabels = getOtherTrain(args)    
@@ -239,6 +242,7 @@ if __name__ == '__main__':
     #norm
     print('normalise')
     trainEmbeddings = normalize(trainEmbeddings, axis=1, norm='l2')
+    #print(trainEmbeddings.shape)
 
     # training
     testPMs = ['Tony_Blair', 'Gordon_Brown', 'David_Cameron']
@@ -251,7 +255,7 @@ if __name__ == '__main__':
         #weights = 'distance'
         #for radius in [39]:
         #for radius in [0.8,0.81,0.82,0.83,0.84,0.85,0.86,0.87,0.88,0.89]:
-        for radius in np.arange(0.6,0.8,0.2):
+        for radius in np.arange(0.6,0.63,0.2):
             print(radius, weights)
             outl = args.nameUnknown
             outl = outl.split()
@@ -268,11 +272,20 @@ if __name__ == '__main__':
                 print("%s, %1.2f, %1.2f, %d, %d" % (testPMs[i], pmRes[i][0], pmRes[i][0]/(100.0-pmRes[i][2])*100.0, 100-pmRes[i][2], pmRes[i][3]))
             print('not PMs:')
             print(notPmRes)
-    elif args.classifier == 'svm' or args.classifier == 'linearSVC':
+    elif args.classifier == 'svm' or args.classifier == 'linearSVC' or args.classifier == 'multiclass' or args.classifier == 'sgd' or args.classifier == 'multiclass2':
         if args.classifier == 'svm': 
             clf = SVC(C=1, kernel='linear', probability=True)
-        else:
+        elif args.classifier == 'linearSVC':
             clf = LinearSVC(penalty='l2', loss='squared_hinge', dual=True, tol=0.0001, C=1.0, multi_class='ovr', fit_intercept=True, intercept_scaling=1, class_weight=None, verbose=0, random_state=None, max_iter=1000)
+        elif args.classifier == 'multiclass':
+            clf = OneVsRestClassifier(SVC(C=1, kernel='linear', probability=True))
+        elif args.classifier == 'multiclass2':
+            clf = OneVsOneClassifier(SVC(C=1, kernel='linear', probability=True))
+        elif args.classifier == 'sgd':
+            clf = linear_model.SGDClassifier()
+        else:
+            print('unknown classifier', args.classifier)
+            sys.exit()
 
         print('train svm')
         clf.fit(trainEmbeddings, labelsNum)
